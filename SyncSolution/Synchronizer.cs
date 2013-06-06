@@ -19,12 +19,12 @@ namespace Microsoft.Gestimum.Synchronization
     {
         static void Main(string[] args)
         {
-            if (args.Length != 6 && args.Length != 7)
+            if (args.Length != 7 && args.Length != 8)
             {
                 Console.Error.Write(
                     "Usage: " +
                     MethodBase.GetCurrentMethod().DeclaringType.Name + 
-                    " ServerIPAdress ServerDatabaseName ClientIPAdress ClientDatabaseName NewReplication [UserName] [Password] "
+                    " ServerIPAdress ServerDatabaseName ClientIPAdress ClientDatabaseName IsClientSqlCompact IsNewReplication [UserName] [Password] "
                     );
                 return;
             }
@@ -34,25 +34,27 @@ namespace Microsoft.Gestimum.Synchronization
             string serverDatabaseName = args[1];
             string clientIPAdress = args[2];
             string clientDatabaseName = args[3];
-            string userName = args[5];
-            int newReplication = int.Parse(args[4]);
+            string userName = args[6];
+            int newReplication = int.Parse(args[5]);
+            int isClientCe = int.Parse(args[4]);
 
-            if (args.Length == 7)
+            if (args.Length == 8)
             {
-                password = args[6];
+                password = args[7];
             }
             SyncManager mySyncManager = new SyncManager(serverIPAdress,
                                                         serverDatabaseName, 
                                                         clientIPAdress, 
                                                         clientDatabaseName, 
                                                         userName,
-                                                        password);
+                                                        password,
+                                                        isClientCe);
                 
             try
             {
                 mySyncManager.ConnectToServerAndClient();
 
-                mySyncManager.SetScopeDescription(userName);
+                mySyncManager.SetScopeDescription(userName+"vb");
                 mySyncManager.InitSyncOrchestrator();
 
                 if (newReplication != 0)
@@ -65,8 +67,15 @@ namespace Microsoft.Gestimum.Synchronization
                     // Configure the scope and change-tracking infrastructure.
                     mySyncManager.ServerConfig.Apply();
 
-                    // Provision the client database.           
-                    mySyncManager.SetSqlScopeProvisioning(mySyncManager.ClientSqlConn);
+                    // Provision the client database.
+                    if (mySyncManager.ClientIsCompact)
+                    {
+                        mySyncManager.SetSqlCeScopeProvisioning(mySyncManager.ClientCeSqlConn);
+                    }
+                    else
+                    {
+                        mySyncManager.SetSqlScopeProvisioning(mySyncManager.ClientSqlConn);
+                    }
 
                     mySyncManager.Synchronize();
                 }
