@@ -1,0 +1,52 @@
+-- BEGIN Enable Snapshot Isolation on Database 'SyncSamplesDb_SqlPeer1' if needed
+IF EXISTS (SELECT NAME FROM sys.databases where NAME = N'SyncSamplesDb_SqlPeer1' AND [snapshot_isolation_state] = 0)
+BEGIN
+	ALTER DATABASE [SyncSamplesDb_SqlPeer1] SET ALLOW_SNAPSHOT_ISOLATION ON
+END
+GO
+-- END Enable Snapshot Isolation on Database 'SyncSamplesDb_SqlPeer1' if needed
+
+-- BEGIN Create Scope Info Table named [Sync].[scope_info]
+IF NOT EXISTS (SELECT t.name FROM sys.tables t JOIN sys.schemas s ON s.schema_id = t.schema_id WHERE t.name = N'scope_info' AND s.name = N'Sync')
+BEGIN
+	CREATE TABLE [Sync].[scope_info] ([scope_local_id] int IDENTITY(1,1) NOT NULL, [scope_id] uniqueidentifier DEFAULT NEWID() NOT NULL, [sync_scope_name] nvarchar(100) NOT NULL, [scope_sync_knowledge] varbinary(max) NULL, [scope_tombstone_cleanup_knowledge] varbinary(max) NULL, [scope_timestamp] timestamp NULL, [scope_config_id] uniqueidentifier NULL, [scope_restore_count] int DEFAULT 0 NOT NULL, [scope_user_comment] nvarchar(max) NULL)
+	ALTER TABLE [Sync].[scope_info] ADD CONSTRAINT [PK_Sync.scope_info] PRIMARY KEY ([sync_scope_name])
+END
+GO
+-- END Create Scope Info Table named [Sync].[scope_info]
+
+-- BEGIN Create Scope Config Table named [Sync].[scope_config]
+IF NOT EXISTS (SELECT t.name FROM sys.tables t JOIN sys.schemas s ON s.schema_id = t.schema_id WHERE t.name = N'scope_config' AND s.name = N'Sync')
+BEGIN
+	CREATE TABLE [Sync].[scope_config] ([config_id] uniqueidentifier NOT NULL, [config_data] xml NOT NULL, [scope_status] char NULL)
+	ALTER TABLE [Sync].[scope_config] ADD CONSTRAINT [PK_Sync.scope_config] PRIMARY KEY ([config_id])
+END
+GO
+-- END Create Scope Config Table named [Sync].[scope_config]
+
+-- BEGIN Create Schema Info Table named [Sync].[schema_info]
+IF NOT EXISTS (SELECT t.name FROM sys.tables t JOIN sys.schemas s ON s.schema_id = t.schema_id WHERE t.name = N'schema_info' AND s.name = N'Sync')
+BEGIN
+	CREATE TABLE [Sync].[schema_info] ([schema_major_version] integer NOT NULL, [schema_minor_version] integer NOT NULL, [schema_extended_info] nvarchar(100) NOT NULL)
+	ALTER TABLE [Sync].[schema_info] ADD CONSTRAINT [PK_Sync.schema_info] PRIMARY KEY ([schema_major_version], [schema_minor_version])
+END
+GO
+-- END Create Schema Info Table named [Sync].[schema_info]
+
+-- BEGIN Add version info for schema
+IF NOT EXISTS (SELECT [schema_major_version] FROM [Sync].[schema_info]) INSERT INTO [Sync].[schema_info] ([schema_major_version], [schema_minor_version], [schema_extended_info]) VALUES (2, 1, N'')
+GO
+-- END Add version info for schema
+
+-- BEGIN Add scope configuration entry for Config ID '9e29a808-3000-41ee-a223-e1bc6f7908ce'
+INSERT INTO [Sync].[scope_config] ([config_id], [config_data], [scope_status]) VALUES ('9e29a808-3000-41ee-a223-e1bc6f7908ce', N'<SqlSyncProviderScopeConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" IsTemplate="false"><Adapter Name="[Sales].[Customer]" GlobalName="[Sales].[Customer]" TrackingTable="[Sync].[Customer_tracking]" SelChngProc="[Sales].[Customer_selectchanges]" SelRowProc="[Sync].[Customer_selectrow]" InsProc="[Sync].[Customer_insert]" UpdProc="[Sync].[Customer_update]" DelProc="[Sync].[Customer_delete]" InsMetaProc="[Sync].[Customer_insertmetadata]" UpdMetaProc="[Sync].[Customer_updatemetadata]" DelMetaProc="[Sync].[Customer_deletemetadata]" BulkTableType="[Sync].[Customer_BulkType]" BulkInsProc="[Sync].[Customer_bulkinsert]" BulkUpdProc="[Sync].[Customer_bulkupdate]" BulkDelProc="[Sync].[Customer_bulkdelete]" InsTrig="[Sales].[Customer_insert_trigger]" UpdTrig="[Sales].[Customer_update_trigger]" DelTrig="[Sales].[Customer_delete_trigger]"><Col name="CustomerId" type="uniqueidentifier" param="@P_1" pk="true" /><Col name="CustomerName" type="nvarchar" size="100" param="@P_2" /><Col name="SalesPerson" type="nvarchar" size="100" param="@P_3" /><Col name="CustomerType" type="nvarchar" size="100" param="@P_4" /><FilterClause>[side].[CustomerType] = ''Retail''</FilterClause><FilterCol>CustomerType</FilterCol></Adapter><Adapter Name="[Sales].[CustomerContact]" GlobalName="[Sales].[CustomerContact]" TrackingTable="[Sync].[CustomerContact_tracking]" SelChngProc="[Sales].[CustomerContact_selectchanges]" SelRowProc="[Sync].[CustomerContact_selectrow]" InsProc="[Sync].[CustomerContact_insert]" UpdProc="[Sync].[CustomerContact_update]" DelProc="[Sync].[CustomerContact_delete]" InsMetaProc="[Sync].[CustomerContact_insertmetadata]" UpdMetaProc="[Sync].[CustomerContact_updatemetadata]" DelMetaProc="[Sync].[CustomerContact_deletemetadata]" BulkTableType="[Sync].[CustomerContact_BulkType]" BulkInsProc="[Sync].[CustomerContact_bulkinsert]" BulkUpdProc="[Sync].[CustomerContact_bulkupdate]" BulkDelProc="[Sync].[CustomerContact_bulkdelete]" InsTrig="[Sales].[CustomerContact_insert_trigger]" UpdTrig="[Sales].[CustomerContact_update_trigger]" DelTrig="[Sales].[CustomerContact_delete_trigger]"><Col name="CustomerId" type="uniqueidentifier" param="@P_1" pk="true" /><Col name="PhoneType" type="nvarchar" size="100" param="@P_2" pk="true" /></Adapter></SqlSyncProviderScopeConfiguration>', 'P')
+GO
+-- END Add scope configuration entry for Config ID '9e29a808-3000-41ee-a223-e1bc6f7908ce'
+
+-- BEGIN Add Scope Info entry for Scope 'filtered_customer'
+INSERT INTO [Sync].[scope_info] ([sync_scope_name], [scope_config_id], [scope_user_comment]) VALUES (N'filtered_customer', '9e29a808-3000-41ee-a223-e1bc6f7908ce', N'')
+GO
+-- END Add Scope Info entry for Scope 'filtered_customer'
+
+UPDATE [Sync].[scope_config] SET scope_status = 'C' 
+WHERE [config_id] = '9e29a808-3000-41ee-a223-e1bc6f7908ce';

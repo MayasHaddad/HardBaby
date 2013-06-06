@@ -1,0 +1,6 @@
+C:\Users\user\documents\visual studio 2010\Projects\SyncSolution\SyncSolution\bin\Debug\SyncSolution.exe
+C:\Users\user\documents\visual studio 2010\Projects\SyncSolution\SyncSolution\bin\Debug\SyncSolution.pdb
+C:\Users\user\documents\visual studio 2010\Projects\SyncSolution\SyncSolution\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\user\documents\visual studio 2010\Projects\SyncSolution\SyncSolution\obj\x86\Debug\SyncSolution.exe
+C:\Users\user\documents\visual studio 2010\Projects\SyncSolution\SyncSolution\obj\x86\Debug\SyncSolution.pdb
+C:\Users\user\documents\visual studio 2010\Projects\SyncSolution\SyncSolution\bin\Debug\SyncSolution.exe.config
