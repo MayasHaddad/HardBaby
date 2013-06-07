@@ -4,3 +4,6 @@ C:\Users\user\documents\visual studio 2010\Projects\SyncSolution\SyncSolution\ob
 C:\Users\user\documents\visual studio 2010\Projects\SyncSolution\SyncSolution\obj\x86\Debug\SyncSolution.exe
 C:\Users\user\documents\visual studio 2010\Projects\SyncSolution\SyncSolution\obj\x86\Debug\SyncSolution.pdb
 C:\Users\user\documents\visual studio 2010\Projects\SyncSolution\SyncSolution\bin\Debug\SyncSolution.exe.config
+C:\Users\mayas-had\Documents\Visual Studio 2012\Projects\HardBaby\SyncSolution\bin\Debug\SyncSolution.exe.config
+C:\Users\mayas-had\Documents\Visual Studio 2012\Projects\HardBaby\SyncSolution\obj\x86\Debug\SyncSolution.exe
+C:\Users\mayas-had\Documents\Visual Studio 2012\Projects\HardBaby\SyncSolution\obj\x86\Debug\SyncSolution.pdb

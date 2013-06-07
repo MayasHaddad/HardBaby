@@ -1,16 +1,5 @@
 ﻿using System;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Text;
-using System.Data;
-using System.Data.SqlClient;
-using System.Data.SqlServerCe;
-using Microsoft.Synchronization;
-using Microsoft.Synchronization.Data;
-using Microsoft.Synchronization.Data.SqlServer;
-using Microsoft.Synchronization.Data.SqlServerCe;
 using ClientDatabaseSchemaManager;
-using System.Collections.Generic;
 using System.Reflection;
 
 namespace Microsoft.Gestimum.Synchronization
